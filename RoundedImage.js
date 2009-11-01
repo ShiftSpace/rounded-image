@@ -57,7 +57,8 @@ var RoundedImage = new Class({
     ctxt.moveTo(this.border['top']['left'], 0);
     ctxt.beginPath();
     ctxt.lineTo(this.size.width - this.border['top']['right'], 0);
-    ctxt.arcTo(this.size.width - this.border['top']['right'], 0, this.size.width, this.border['top']['right'], RoundedImage.HalfPI);
+    //ctxt.arcTo(this.size.width - this.border['top']['right'], 0, this.size.width, this.border['top']['right'], RoundedImage.HalfPI);
+    ctxt.arc(this.size.width - this.border['top']['right'], this.border['top']['right'], this.border['top']['right'], RoundedImage.HalfPI, 0, false);
     ctxt.lineTo(this.size.width, this.size.height - this.border['bottom']['right']);
     ctxt.arcTo(this.size.width, this.size.height - this.border['bottom']['right'], this.size.width - this.border['bottom']['right'], this.size.height, RoundedImage.HalfPI);
     ctxt.lineTo(this.border['bottom']['left'], this.size.height);
