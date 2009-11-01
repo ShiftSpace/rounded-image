@@ -2,10 +2,6 @@ Element.Styles.MozBorderRadiusTopleft = "@px";
 Element.Styles.MozBorderRadiusTopright = "@px";
 Element.Styles.MozBorderRadiusBottomleft = "@px";
 Element.Styles.MozBorderRadiusBottomright = "@px";
-Element.Styles.WebkitBorderTopLeftRadius = "@px";
-Element.Styles.WebkitBorderTopRightRadius = "@px";
-Element.Styles.WebkitBorderBottomLeftRadius = "@px";
-Element.Styles.WebkitBorderBottomRightRadius = "@px";
 
 //(function() {
 function $prefix(str) {
