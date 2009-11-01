@@ -57,23 +57,24 @@ var RoundedImage = new Class({
   },
   
   clip: function(ctxt) {
+    console.log(this.size, this.border, RoundedImage.HalfPI);
+    ctxt.moveTo(this.border['top']['left'], 0);
     ctxt.beginPath();
-    ctxt.moveTo(0, this.border['bottom']['left']);
-    ctxt.lineTo(0, this.size.height - this.border['top']['left']);
-    ctxt.arcTo(0, this.size.height - this.border['top']['left'], this.border['top']['left'], this.size.height, RoundedImage.HalfPI);
-    ctxt.lineTo(this.border['top']['left'], this.size.width - this.border['top']['right']);
-    ctxt.arcTo(this.size.width - this.border['top']['right'], this.size.height, this.size.width, this.size.height - this.border['top']['right'], RoundedImage.HalfPI);
-    ctxt.lineTo(this.size.width, this.border['bottom']['right']);
-    ctxt.arcTo(this.size.width, this.border['bottom']['right'], this.size.width - this.border['bottom']['right'], 0, RoundedImage.HalfPI);
-    ctxt.lineTo(this.border['bottom']['left'], 0);
-    ctxt.arcTo(this.border['bottom']['left'], 0, 0, this.border['bottom']['left'], RoundedImage.HalfPI);
+    ctxt.lineTo(this.size.width - this.border['top']['right'], 0);
+    ctxt.arcTo(this.size.width - this.border['top']['right'], 0, this.size.width, this.border['top']['right'], RoundedImage.HalfPI);
+    ctxt.lineTo(this.size.width, this.size.height - this.border['bottom']['right']);
+    ctxt.arcTo(this.size.width, this.size.height - this.border['bottom']['right'], this.size.width - this.border['bottom']['right'], this.size.height, RoundedImage.HalfPI);
+    ctxt.lineTo(this.border['bottom']['left'], this.size.height);
+    ctxt.arcTo(this.border['bottom']['left'], this.size.height, 0, this.size.height - this.border['bottom']['left'], RoundedImage.HalfPI);
+    ctxt.lineTo(0, this.border['top']['left']);
+    ctxt.arcTo(0, this.border['top']['left'], this.border['top']['left'], 0, RoundedImage.HalfPI);
     ctxt.clip();
   },
   
   render: function() {
     console.log("render");
     var ctxt = this.element.getContext("2d");
-    this.size = {width: this.image.width, height: this.image.height};
+    this.size = {width: parseInt(this.image.width), height: parseInt(this.image.height)};
     this.element.setProperty("width", this.size.width);
     this.element.setProperty("height", this.size.width);
     this.element.setStyles(this.size);
