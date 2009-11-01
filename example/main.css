@@ -1,10 +1,13 @@
 .myimage {
-  -moz-border-radius: 20px;
-  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px 0px 0px 20px;
+  -webkit-border-top-left-radius: 20px;
+  -webkit-border-bottom-left-radius: 20px;
   border-radius: 4px;
 }
 
 .myimage:hover {
   width: 320px;
   height: 240px;
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px 0px 0px 20px;
 }

@@ -10,6 +10,12 @@ function $prefix(str) {
   };
 }
 
+function $postfix(str) {
+  return function(ostr) {
+    return ostr + str;
+  };
+}
+
 var HalfPI = Math.PI / 2;
 var ThreeFourths = HalfPI + Math.PI;
 
@@ -18,10 +24,12 @@ window.RoundedImage = new Class({
   
   defaults: {
     borderRadius: 'none',
+    selector: 'null'
   },
   
   initialize: function(element, options) {
     this.setOptions(this.defaults, options);
+    this.selector = this.options.selector;
     this.image = $(element);
     this.element = new Element('canvas');
     this.adoptStyles(this.image);
@@ -40,7 +48,8 @@ window.RoundedImage = new Class({
   },
   
   getBorderStyles: function(element) {
-    var styles = element.getProperty("class").split(" ").map($prefix(".")).map(RoundedImage.search);
+    var classes = element.getProperty("class").split(" ").map(String.trim).map($prefix("."));
+    var styles = classes.map(RoundedImage.search);
     var allStyles = {};
     for(var i = 0, len = styles.length; i < len; i++) allStyles = $merge(allStyles, styles[i]);
     this.border = {};
@@ -50,6 +59,10 @@ window.RoundedImage = new Class({
     this.border['top']['right'] = parseInt(allStyles['MozBorderRadiusTopright'] || allStyles['WebkitBorderTopRightRadius'] || 0);
     this.border['bottom']['left'] = parseInt(allStyles['MozBorderRadiusBottomleft'] || allStyles['WebkitBorderBottomLeftRadius'] || 0);
     this.border['bottom']['right'] = parseInt(allStyles['MozBorderRadiusBottomright'] || allStyles['WebkitBorderBottomRightRadius'] || 0);
+    var hoverStyles = classes.map($postfix(":hover")).map(RoundedImage.search);
+    hoverStyles = hoverStyles.filter(function(obj) { return $H(obj).getLength() > 0; });
+    var allHoverStyles = {};
+    for(var i = 0, len = styles.length; i < len; i++) allHoverStyles = $merge(allHoverStyles, hoverStyles[i]);
   },
   
   clip: function(ctxt) {
@@ -90,11 +103,11 @@ window.RoundedImage = new Class({
 });
 })();
 
-RoundedImage.init = function(sel) {
+RoundedImage.init = function(selector) {
   if(!Browser.Engine.webkit) {
-    sel = sel || ".rounded-image";
-    $$(sel).each(function(el) {
-      new RoundedImage(el);
+    selector = selector || ".rounded-image";
+    $$(selector).each(function(el) {
+      new RoundedImage(el, {selector:selector});
     });
   }
 };
