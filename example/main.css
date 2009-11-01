@@ -3,3 +3,8 @@
   -webkit-border-radius: 20px;
   border-radius: 4px;
 }
+
+.myimage:hover {
+  width: 320px;
+  height: 240px;
+}

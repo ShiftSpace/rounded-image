@@ -82,7 +82,7 @@ window.RoundedImage = new Class({
     var ctxt = this.element.getContext("2d");
     this.size = {width: parseInt(this.image.width), height: parseInt(this.image.height)};
     this.element.setProperty("width", this.size.width);
-    this.element.setProperty("height", this.size.width);
+    this.element.setProperty("height", this.size.height);
     this.element.setStyles(this.size);
     this.clip(ctxt);
     ctxt.drawImage(this.image, 0, 0, this.size.width, this.size.height);
@@ -91,10 +91,12 @@ window.RoundedImage = new Class({
 })();
 
 RoundedImage.init = function(sel) {
-  sel = sel || ".rounded-image";
-  $$(sel).each(function(el) {
-    new RoundedImage(el);
-  });
+  if(!Browser.Engine.webkit) {
+    sel = sel || ".rounded-image";
+    $$(sel).each(function(el) {
+      new RoundedImage(el);
+    });
+  }
 };
 
 (function() {
