@@ -3,14 +3,17 @@ Element.Styles.MozBorderRadiusTopright = "@px";
 Element.Styles.MozBorderRadiusBottomleft = "@px";
 Element.Styles.MozBorderRadiusBottomright = "@px";
 
-//(function() {
+(function() {
 function $prefix(str) {
   return function(ostr) {
     return str + ostr;
   };
 }
 
-var RoundedImage = new Class({
+var HalfPI = Math.PI / 2;
+var ThreeFourths = HalfPI + Math.PI;
+
+window.RoundedImage = new Class({
   Implements: [Options, Events],
   
   defaults: {
@@ -38,10 +41,8 @@ var RoundedImage = new Class({
   
   getBorderStyles: function(element) {
     var styles = element.getProperty("class").split(" ").map($prefix(".")).map(RoundedImage.search);
-    console.log(styles);
     var allStyles = {};
     for(var i = 0, len = styles.length; i < len; i++) allStyles = $merge(allStyles, styles[i]);
-    console.log(allStyles);
     this.border = {};
     this.border['top'] = {};
     this.border['bottom'] = {};
@@ -49,27 +50,35 @@ var RoundedImage = new Class({
     this.border['top']['right'] = parseInt(allStyles['MozBorderRadiusTopright'] || allStyles['WebkitBorderTopRightRadius'] || 0);
     this.border['bottom']['left'] = parseInt(allStyles['MozBorderRadiusBottomleft'] || allStyles['WebkitBorderBottomLeftRadius'] || 0);
     this.border['bottom']['right'] = parseInt(allStyles['MozBorderRadiusBottomright'] || allStyles['WebkitBorderBottomRightRadius'] || 0);
-    console.log(this.border);
   },
   
   clip: function(ctxt) {
-    console.log(this.size, this.border, RoundedImage.HalfPI);
     ctxt.moveTo(this.border['top']['left'], 0);
     ctxt.beginPath();
     ctxt.lineTo(this.size.width - this.border['top']['right'], 0);
-    //ctxt.arcTo(this.size.width - this.border['top']['right'], 0, this.size.width, this.border['top']['right'], RoundedImage.HalfPI);
-    ctxt.arc(this.size.width - this.border['top']['right'], this.border['top']['right'], this.border['top']['right'], RoundedImage.HalfPI, 0, false);
+    ctxt.arc(this.size.width - this.border['top']['right'], 
+             this.border['top']['right'], 
+             this.border['top']['right'], 
+             HalfPI, 0, false);
     ctxt.lineTo(this.size.width, this.size.height - this.border['bottom']['right']);
-    ctxt.arcTo(this.size.width, this.size.height - this.border['bottom']['right'], this.size.width - this.border['bottom']['right'], this.size.height, RoundedImage.HalfPI);
+    ctxt.arc(this.size.width - this.border['bottom']['right'],
+             this.size.height - this.border['bottom']['right'],
+             this.border['bottom']['right'], 
+             0, -(ThreeFourths), false);
     ctxt.lineTo(this.border['bottom']['left'], this.size.height);
-    ctxt.arcTo(this.border['bottom']['left'], this.size.height, 0, this.size.height - this.border['bottom']['left'], RoundedImage.HalfPI);
+    ctxt.arc(this.border['bottom']['left'],
+             this.size.height - this.border['bottom']['left'],
+             this.border['bottom']['left'],
+             -(ThreeFourths), -Math.PI, false);
     ctxt.lineTo(0, this.border['top']['left']);
-    ctxt.arcTo(0, this.border['top']['left'], this.border['top']['left'], 0, RoundedImage.HalfPI);
+    ctxt.arc(this.border['top']['left'], 
+             this.border['top']['left'], 
+             this.border['top']['left'],
+             -Math.PI, -HalfPI, false);
     ctxt.clip();
   },
   
   render: function() {
-    console.log("render");
     var ctxt = this.element.getContext("2d");
     this.size = {width: parseInt(this.image.width), height: parseInt(this.image.height)};
     this.element.setProperty("width", this.size.width);
@@ -79,17 +88,14 @@ var RoundedImage = new Class({
     ctxt.drawImage(this.image, 0, 0, this.size.width, this.size.height);
   }
 });
-//})();
+})();
 
 RoundedImage.init = function(sel) {
   sel = sel || ".rounded-image";
   $$(sel).each(function(el) {
-    console.log(el);
     new RoundedImage(el);
   });
-}
-
-RoundedImage.HalfPI = Math.PI / 2;
+};
 
 (function() {
 var fx = new Fx.CSS();
