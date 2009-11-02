@@ -1,8 +1,8 @@
 h1. Rounded Image
 
-This library fixes the broken combination of images with the CSS3 border-radius style.
+This library fixes the broken combination of images with the CSS3 border-radius style in Firefox. We are working on supporting more browsers. Help appreciated :)
 
-<img src="http://farm3.static.flickr.com/2712/4066296775_3ecbe37654.jpg" width="500" height="104" alt="rounded-image" />
+<img src="http://farm3.static.flickr.com/2551/4067465142_36d84c8b79_o.png" width="669" height="134" alt="rounded" />
 
 h2. Usage
 
