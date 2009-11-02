@@ -1,8 +1,3 @@
-// ==Builder==
-// @required
-// @package           RoundedImage
-// ==/Builder==
-
 Element.Styles.MozBorderRadiusTopleft = "@px";
 Element.Styles.MozBorderRadiusTopright = "@px";
 Element.Styles.MozBorderRadiusBottomleft = "@px";
