@@ -1,5 +1,30 @@
 h1. Rounded Image
 
-This library fixes the broken combination of images with the CSS3 border-radius style.
+This library fixes the broken combination of images with the CSS3 border-radius style in Firefox. We are working on supporting more browsers. Help appreciated :)
 
-<img href="http://www.flickr.com/photos/13326626@N05/4066296775/"></img>
+<img src="http://farm3.static.flickr.com/2551/4067465142_36d84c8b79_o.png" width="669" height="134" alt="rounded" />
+
+h2. Usage
+
+You can define CSS like so:
+
+<pre class="code">
+.myimagea {
+  -moz-border-radius: 20px 0px 0px 20px;
+  -webkit-border-top-left-radius: 20px;
+  -webkit-border-bottom-left-radius: 20px;
+  border-radius: 4px;
+}
+</pre>
+
+You markup should look like this:
+
+<pre class="code">
+<img class="rounded-image myimagea" width="160" height="120" src="form.jpg"></img>
+</pre>
+
+When the page loads call the following:
+
+<pre class="code">
+RoundedImage.init();
+</pre>
