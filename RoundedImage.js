@@ -37,6 +37,7 @@ window.RoundedImage = new Class({
     this.selector = this.options.selector;
     this.image = $(element);
     this.element = new Element('canvas');
+    if(Browser.Engine.trident) G_vmlCanvasManager.initElement(this.element);
     this.adoptStyles(this.image);
     this.getBorderStyles(this.element);
     this.element.replaces(this.image);
@@ -130,7 +131,7 @@ window.RoundedImage = new Class({
 })();
 
 RoundedImage.init = function(selector) {
-  if(Browser.Engine.gecko) {
+  if(!Browser.Engine.webkit) {
     selector = selector || ".rounded-image";
     $$(selector).each(function(el) {
       new RoundedImage(el, {selector:selector});
