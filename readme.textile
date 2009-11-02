@@ -13,7 +13,6 @@ You can define CSS like so:
   -moz-border-radius: 20px 0px 0px 20px;
   -webkit-border-top-left-radius: 20px;
   -webkit-border-bottom-left-radius: 20px;
-  border-radius: 4px;
 }
 </pre>
 
