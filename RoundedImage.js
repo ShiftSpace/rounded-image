@@ -53,7 +53,6 @@ window.RoundedImage = new Class({
     var allStyles = {};
     for(var i = 0, len = styles.length; i < len; i++) allStyles = $merge(allStyles, styles[i]);
     this.borders = this._getBorderStyles({}, allStyles);
-    
     var hoverStyles = classes.map($postfix(":hover")).map(RoundedImage.search);
     hoverStyles = hoverStyles.filter(function(obj) { return $H(obj).getLength() > 0; });
     var allHoverStyles = {};
@@ -62,7 +61,7 @@ window.RoundedImage = new Class({
     this.element.addEvent('mouseenter', this.onHover.bind(this));
     this.element.addEvent('mouseleave', this.onUnhover.bind(this));
     this.hoverBorders = this._getBorderStyles({}, allHoverStyles);
-    this.hoverSize = {width: allHoverStyles['width'], height: allHoverStyles['height']};
+    this.hoverSize = {width: parseInt(allHoverStyles['width']), height: parseInt(allHoverStyles['height'])};
   },
   
   _getBorderStyles: function(object, styles) {
