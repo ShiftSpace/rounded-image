@@ -1,0 +1,5 @@
+h1. Rounded Image
+
+This library fixes the broken combination of images with the CSS3 border-radius style.
+
+<img href="http://www.flickr.com/photos/13326626@N05/4066296775/"></img>
