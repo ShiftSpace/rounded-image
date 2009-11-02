@@ -20,7 +20,7 @@ You can define CSS like so:
 You markup should look like this:
 
 <pre class="code">
-&lt;img class="rounded-image myimagea" width="160" height="120" src="form.jpg"&gt;&lt;/img&gt;
+<img class="rounded-image myimagea" width="160" height="120" src="form.jpg"></img>
 </pre>
 
 When the page loads call the following:
