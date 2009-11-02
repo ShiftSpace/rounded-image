@@ -125,7 +125,7 @@ window.RoundedImage = new Class({
 })();
 
 RoundedImage.init = function(selector) {
-  if(!Browser.Engine.webkit) {
+  if(Browser.Engine.gecko) {
     selector = selector || ".rounded-image";
     $$(selector).each(function(el) {
       new RoundedImage(el, {selector:selector});
