@@ -38,7 +38,7 @@ window.RoundedImage = new Class({
     if(!this.image.width && !this.image.height) {
       this.image.onload = this.render.bind(this);
     } else {
-      this.render();
+      this.render(this.borders);
     }
   },
   
@@ -52,53 +52,75 @@ window.RoundedImage = new Class({
     var styles = classes.map(RoundedImage.search);
     var allStyles = {};
     for(var i = 0, len = styles.length; i < len; i++) allStyles = $merge(allStyles, styles[i]);
-    this.border = {};
-    this.border['top'] = {};
-    this.border['bottom'] = {};
-    this.border['top']['left'] = parseInt(allStyles['MozBorderRadiusTopleft'] || allStyles['WebkitBorderTopLeftRadius'] || 0);
-    this.border['top']['right'] = parseInt(allStyles['MozBorderRadiusTopright'] || allStyles['WebkitBorderTopRightRadius'] || 0);
-    this.border['bottom']['left'] = parseInt(allStyles['MozBorderRadiusBottomleft'] || allStyles['WebkitBorderBottomLeftRadius'] || 0);
-    this.border['bottom']['right'] = parseInt(allStyles['MozBorderRadiusBottomright'] || allStyles['WebkitBorderBottomRightRadius'] || 0);
+    this.borders = this._getBorderStyles({}, allStyles);
+    
     var hoverStyles = classes.map($postfix(":hover")).map(RoundedImage.search);
     hoverStyles = hoverStyles.filter(function(obj) { return $H(obj).getLength() > 0; });
     var allHoverStyles = {};
     for(var i = 0, len = styles.length; i < len; i++) allHoverStyles = $merge(allHoverStyles, hoverStyles[i]);
+    if($H(allHoverStyles).getLength() == 0) return;
+    this.element.addEvent('mouseenter', this.onHover.bind(this));
+    this.element.addEvent('mouseleave', this.onUnhover.bind(this));
+    this.hoverBorders = this._getBorderStyles({}, allHoverStyles);
+    this.hoverSize = {width: allHoverStyles['width'], height: allHoverStyles['height']};
   },
   
-  clip: function(ctxt) {
-    ctxt.moveTo(this.border['top']['left'], 0);
+  _getBorderStyles: function(object, styles) {
+    object = {};
+    object['top'] = {};
+    object['bottom'] = {};
+    object['top']['left'] = parseInt(styles['MozBorderRadiusTopleft'] || styles['WebkitBorderTopLeftRadius'] || 0);
+    object['top']['right'] = parseInt(styles['MozBorderRadiusTopright'] || styles['WebkitBorderTopRightRadius'] || 0);
+    object['bottom']['left'] = parseInt(styles['MozBorderRadiusBottomleft'] || styles['WebkitBorderBottomLeftRadius'] || 0);
+    object['bottom']['right'] = parseInt(styles['MozBorderRadiusBottomright'] || styles['WebkitBorderBottomRightRadius'] || 0);
+    return object;
+  },
+  
+  onHover: function(evt){
+    evt = new Event(evt);
+    this.render(this.hoverBorders, this.hoverSize);
+  },
+  
+  onUnhover: function(evt) {
+    evt = new Event(evt);
+    this.render(this.borders, this.size);
+  },
+  
+  clip: function(ctxt, borders, size) {
+    ctxt.moveTo(borders['top']['left'], 0);
     ctxt.beginPath();
-    ctxt.lineTo(this.size.width - this.border['top']['right'], 0);
-    ctxt.arc(this.size.width - this.border['top']['right'], 
-             this.border['top']['right'], 
-             this.border['top']['right'], 
+    ctxt.lineTo(size.width - borders['top']['right'], 0);
+    ctxt.arc(size.width - borders['top']['right'], 
+             borders['top']['right'], 
+             borders['top']['right'], 
              HalfPI, 0, false);
-    ctxt.lineTo(this.size.width, this.size.height - this.border['bottom']['right']);
-    ctxt.arc(this.size.width - this.border['bottom']['right'],
-             this.size.height - this.border['bottom']['right'],
-             this.border['bottom']['right'], 
+    ctxt.lineTo(size.width, size.height - borders['bottom']['right']);
+    ctxt.arc(size.width - borders['bottom']['right'],
+             size.height - borders['bottom']['right'],
+             borders['bottom']['right'], 
              0, -(ThreeFourths), false);
-    ctxt.lineTo(this.border['bottom']['left'], this.size.height);
-    ctxt.arc(this.border['bottom']['left'],
-             this.size.height - this.border['bottom']['left'],
-             this.border['bottom']['left'],
+    ctxt.lineTo(borders['bottom']['left'], size.height);
+    ctxt.arc(borders['bottom']['left'],
+             size.height - borders['bottom']['left'],
+             borders['bottom']['left'],
              -(ThreeFourths), -Math.PI, false);
-    ctxt.lineTo(0, this.border['top']['left']);
-    ctxt.arc(this.border['top']['left'], 
-             this.border['top']['left'], 
-             this.border['top']['left'],
+    ctxt.lineTo(0, borders['top']['left']);
+    ctxt.arc(borders['top']['left'], 
+             borders['top']['left'], 
+             borders['top']['left'],
              -Math.PI, -HalfPI, false);
     ctxt.clip();
   },
   
-  render: function() {
+  render: function(borders, size) {
     var ctxt = this.element.getContext("2d");
-    this.size = {width: parseInt(this.image.width), height: parseInt(this.image.height)};
-    this.element.setProperty("width", this.size.width);
-    this.element.setProperty("height", this.size.height);
-    this.element.setStyles(this.size);
-    this.clip(ctxt);
-    ctxt.drawImage(this.image, 0, 0, this.size.width, this.size.height);
+    size = size || {width: parseInt(this.image.width), height: parseInt(this.image.height)};
+    if(!this.size) this.size = size;
+    this.element.setProperty("width", size.width);
+    this.element.setProperty("height", size.height);
+    this.element.setStyles(size);
+    this.clip(ctxt, borders, size);
+    ctxt.drawImage(this.image, 0, 0, size.width, size.height);
   }
 });
 })();
