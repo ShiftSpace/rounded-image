@@ -130,10 +130,11 @@ window.RoundedImage = new Class({
 });
 })();
 
-RoundedImage.init = function(selector) {
+RoundedImage.init = function(selector, context) {
+  context = context || window;
   if(!Browser.Engine.webkit) {
     selector = selector || ".rounded-image";
-    $$(selector).each(function(el) {
+    context.$$(selector).each(function(el) {
       new RoundedImage(el, {selector:selector});
     });
   }
