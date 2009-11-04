@@ -38,7 +38,7 @@ window.RoundedImage = new Class({
     this.setOptions(this.defaults, options);
     this.selector = this.options.selector;
     this.image = this.options.contextWin.$(element);
-    this.element = this.options.contextWin.$(contextDoc.createElement('canvas'));
+    this.element = this.options.contextWin.$(this.options.contextDoc.createElement('canvas'));
     if(Browser.Engine.trident) G_vmlCanvasManager.initElement(this.element);
     this.adoptStyles(this.image);
     this.getBorderStyles(this.element);
