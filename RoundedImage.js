@@ -29,14 +29,16 @@ window.RoundedImage = new Class({
   
   defaults: {
     borderRadius: 'none',
-    selector: 'null'
+    selector: null,
+    contextDoc: document,
+    contextWin: window
   },
   
   initialize: function(element, options) {
     this.setOptions(this.defaults, options);
     this.selector = this.options.selector;
-    this.image = $(element);
-    this.element = new Element('canvas');
+    this.image = this.options.contextWin.$(element);
+    this.element = this.options.contextWin.$(contextDoc.createElement('canvas'));
     if(Browser.Engine.trident) G_vmlCanvasManager.initElement(this.element);
     this.adoptStyles(this.image);
     this.getBorderStyles(this.element);
@@ -132,10 +134,17 @@ window.RoundedImage = new Class({
 
 RoundedImage.init = function(selector, context) {
   context = context || window;
+  var getter = ($type(context) == 'window') ? '$$' : 'getElements';
   if(!Browser.Engine.webkit) {
     selector = selector || ".rounded-image";
-    context.$$(selector).each(function(el) {
-      new RoundedImage(el, {selector:selector});
+    SSLog(selector, SSLogForce);
+    context[getter](selector).each(function(el) {
+      SSLog(el, SSLogForce);
+      new RoundedImage(el, {
+        selector:selector, 
+        contextDoc: new Document(context.getDocument()),
+        contextWin: new Window(context.getWindow())
+      });
     });
   }
 };
