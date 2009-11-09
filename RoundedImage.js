@@ -39,10 +39,13 @@ window.RoundedImage = new Class({
     this.selector = this.options.selector;
     this.image = this.options.contextWin.$(element);
     this.element = this.options.contextWin.$(this.options.contextDoc.createElement('canvas'));
+
     if(Browser.Engine.trident) G_vmlCanvasManager.initElement(this.element);
+
     this.adoptStyles(this.image);
     this.getBorderStyles(this.element);
     this.element.replaces(this.image);
+    
     if(!this.image.width && !this.image.height) {
       this.image.onload = this.render.bind(this);
     } else {
@@ -57,15 +60,21 @@ window.RoundedImage = new Class({
   
   getBorderStyles: function(element) {
     var classes = element.getProperty("class").split(" ").map(String.trim).map($prefix("."));
+    classes.push(this.selector);
+    
     var styles = classes.map(RoundedImage.search);
     var allStyles = {};
+    
     for(var i = 0, len = styles.length; i < len; i++) allStyles = $merge(allStyles, styles[i]);
     this.borders = this._getBorderStyles({}, allStyles);
+    
     var hoverStyles = classes.map($postfix(":hover")).map(RoundedImage.search);
     hoverStyles = hoverStyles.filter(function(obj) { return $H(obj).getLength() > 0; });
     var allHoverStyles = {};
+    
     for(var i = 0, len = styles.length; i < len; i++) allHoverStyles = $merge(allHoverStyles, hoverStyles[i]);
     if($H(allHoverStyles).getLength() == 0) return;
+    
     this.element.addEvent('mouseenter', this.onHover.bind(this));
     this.element.addEvent('mouseleave', this.onUnhover.bind(this));
     this.hoverBorders = this._getBorderStyles({}, allHoverStyles);
@@ -122,7 +131,9 @@ window.RoundedImage = new Class({
   render: function(borders, size) {
     var ctxt = this.element.getContext("2d");
     size = size || {width: parseInt(this.image.width), height: parseInt(this.image.height)};
+    
     if(!this.size) this.size = size;
+    
     this.element.setProperty("width", size.width);
     this.element.setProperty("height", size.height);
     this.element.setStyles(size);
@@ -132,16 +143,14 @@ window.RoundedImage = new Class({
 });
 })();
 
-RoundedImage.init = function(selector, context) {
+RoundedImage.init = function(selector, context, styleDoc) {
   context = context || window;
-  var getter = ($type(context) == 'window') ? '$$' : 'getElements';
+  RoundedImage.search = RoundedImage.fx.search._origin.curry(RoundedImage.fx, Function._, styleDoc || (new Document(context.getDocument())));
   if(!Browser.Engine.webkit) {
     selector = selector || ".rounded-image";
-    SSLog(selector, SSLogForce);
-    context[getter](selector).each(function(el) {
-      SSLog(el, SSLogForce);
+    context.$$(selector).each(function(el) {
       new RoundedImage(el, {
-        selector:selector, 
+        selector: selector, 
         contextDoc: new Document(context.getDocument()),
         contextWin: new Window(context.getWindow())
       });
@@ -151,5 +160,6 @@ RoundedImage.init = function(selector, context) {
 
 (function() {
 var fx = new Fx.CSS();
+RoundedImage.fx = fx;
 RoundedImage.search = fx.search.bind(fx);
 })();
